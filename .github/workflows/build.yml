@@ -18,10 +18,12 @@ jobs:
       - name: Delete existing release (if any)
         run: |
           try {
-            gh release delete "${{ github.ref }}" -y
+            $tag = "${{ github.ref }}".Replace("refs/tags/", "")
+            gh release delete $tag -y
           } catch {
             Write-Host "No existing release to delete or deletion failed safely."
           }
+          exit 0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
