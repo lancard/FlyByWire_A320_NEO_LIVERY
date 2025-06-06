@@ -29,7 +29,7 @@ jobs:
       - name: Delete existing release (if any)
         run: |
           try {
-            gh release delete $BRANCH_NAME -y
+            gh release delete $Env:GITHUB_REF_NAME -y
           } catch {
             Write-Host "No existing release to delete or deletion failed safely."
           }
@@ -44,8 +44,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: $BRANCH_NAME
-          release_name: Release $BRANCH_NAME
+          tag_name: $Env:GITHUB_REF_NAME
+          release_name: Release $Env:GITHUB_REF_NAME
           draft: false
           prerelease: false
 
