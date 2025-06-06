@@ -24,10 +24,9 @@ jobs:
         shell: pwsh
 
       - name: Delete existing release (if any)
-        run: |
-          gh release delete ${{ github.ref }} -y || echo "No existing release to delete"
+        run: gh release delete ${{ github.ref }} -y -ErrorAction SilentlyContinue
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
 
       - name: Create Release
