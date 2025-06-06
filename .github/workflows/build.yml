@@ -15,6 +15,17 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v4
 
+      - name: Delete existing release (if any)
+        run: |
+          try {
+            gh release delete "${{ github.ref }}" -y
+          } catch {
+            Write-Host "No existing release to delete or deletion failed safely."
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
+
       - name: Build
         run: .\build.bat
         shell: cmd
@@ -24,9 +35,14 @@ jobs:
         shell: pwsh
 
       - name: Delete existing release (if any)
-        run: gh release delete ${{ github.ref }} -y -ErrorAction SilentlyContinue
+        run: |
+          try {
+            gh release delete "${{ github.ref }}" -y
+          } catch {
+            Write-Host "No existing release to delete or deletion failed safely."
+          }
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
 
       - name: Create Release
