@@ -14,6 +14,12 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
+      
+      - name: Set branch name
+        run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Print branch name
+        run: echo "$BRANCH_NAME"
 
       - name: Build
         run: .\build.bat
@@ -26,8 +32,7 @@ jobs:
       - name: Delete existing release (if any)
         run: |
           try {
-            $tag = "${{ github.ref }}".Replace("refs/tags/", "")
-            gh release delete $tag -y
+            gh release delete $BRANCH_NAME -y
           } catch {
             Write-Host "No existing release to delete or deletion failed safely."
           }
@@ -42,8 +47,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: $BRANCH_NAME
+          release_name: Release $BRANCH_NAME
           draft: false
           prerelease: false
 
